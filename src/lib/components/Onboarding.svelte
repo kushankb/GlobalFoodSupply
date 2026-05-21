@@ -67,8 +67,8 @@
 {#if showWelcome}
   <div class="welcome-overlay" onclick={dismissWelcome}>
     <div class="welcome-card" onclick={(e) => e.stopPropagation()}>
-      <div class="welcome-title">Global Food Transport Infrastructure</div>
-      <div class="welcome-subtitle">Criticality of food supply chains worldwide</div>
+      <div class="welcome-title">Global Food Supply</div>
+      <div class="welcome-subtitle">Where food is grown and how it moves around the world</div>
 
       <div class="welcome-body">
         <p>This map shows <strong>where the world's food is grown</strong> and the <strong>transport networks</strong> that move it — from farm to table, across borders and oceans.</p>

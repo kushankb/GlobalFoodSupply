@@ -147,7 +147,7 @@
 <!-- Loading overlay -->
 <div class="loading-overlay {mapLoaded ? 'hidden' : ''}">
   <div class="loading-spinner"></div>
-  <div class="loading-text">Loading global food infrastructure data…</div>
+  <div class="loading-text">Loading global food supply data…</div>
 </div>
 
 <!-- Map -->

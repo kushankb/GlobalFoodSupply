@@ -36,7 +36,7 @@
 <div class="control-panel">
   <!-- Panel header -->
   <div class="panel-header">
-    <div class="panel-title">Global Food<br />Transport Infrastructure</div>
+    <div class="panel-title">Global Food Supply</div>
     <button
       class="info-btn"
       onmouseenter={showInfoTooltip}
