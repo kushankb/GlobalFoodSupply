@@ -6,7 +6,6 @@
     { action: "Click edge",    desc: "Turn on Infrastructure Edges and click any line to see food flow, criticality & destination countries" },
     { action: "Click region",  desc: "Click any country or state to see its food production breakdown" },
     { action: "Zoom in",       desc: "Zoom in past country level to explore state / province detail" },
-    { action: "Farm size",     desc: "Turn on the Farm Size overlay to see how production relates to farm scale" },
     { action: "Filter",        desc: "Click a food group in the legend to highlight only that group" },
   ];
 </script>

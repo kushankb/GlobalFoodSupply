@@ -7,7 +7,6 @@
   import {
     BREADBASKET,
     BREADBASKET_METHODS,
-    RASTER_OVERLAYS,
     FOOD_GROUP_COLORS,
     FOOD_GROUP_CODES,
     FOOD_GROUP_BY_CODE,
@@ -16,7 +15,6 @@
     INFRA_COLORS,
     methodCodeExpr,
     decodePackedC,
-    getTileDir,
   } from '$lib/layers/tilesetIds.js';
 
   let {
@@ -35,12 +33,6 @@
 
   import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
   const MAPBOX_TOKEN = PUBLIC_MAPBOX_TOKEN;
-
-  const TILE_BASE = 'https://kushankbajaj.com/exposure-tiles';
-
-  function tileUrl(dir) {
-    return `${TILE_BASE}/${dir}/{z}/{x}/{y}.png`;
-  }
 
   const BREADBASKET_SIZE = [
     'interpolate', ['linear'], ['zoom'],
@@ -98,11 +90,6 @@
       promoteId: { [ADMIN2_STATES.layer]: ADMIN2_STATES.idKey },
     });
 
-    // Farm size raster (only non-climate raster overlay kept)
-    m.addSource('raster-farmsize', {
-      type: 'raster', tiles: [tileUrl(getTileDir('farmsize'))],
-      tileSize: 512, minzoom: 1, maxzoom: 7,
-    });
   }
 
   function addAllLayers(m) {
@@ -178,12 +165,6 @@
       },
     });
 
-    // Farm size raster
-    m.addLayer({
-      id: 'raster-farmsize', type: 'raster', source: 'raster-farmsize',
-      layout: { visibility: 'none' },
-      paint: { 'raster-opacity': 0.65, 'raster-fade-duration': 150 },
-    });
   }
 
   // Track hovered/selected features
@@ -459,12 +440,6 @@
       }
     }
 
-    const fsActive = activeLayers.includes('farmsize');
-    if (m.getLayer('raster-farmsize')) {
-      m.setLayoutProperty('raster-farmsize', 'visibility', fsActive ? 'visible' : 'none');
-      if (fsActive) m.setPaintProperty('raster-farmsize', 'raster-opacity', layerOpacity.farmsize ?? 0.65);
-    }
-
     if (selectedCountryId == null && selectedCountryFeatureId !== null) {
       m.setFeatureState({ source: 'countries', sourceLayer: COUNTRY_BOUNDARIES.layer, id: selectedCountryFeatureId }, { selected: false });
       selectedCountryFeatureId = null;
@@ -474,8 +449,7 @@
       selectedAdmin2FeatureId = null;
     }
 
-    const fsOverlay = fsActive ? RASTER_OVERLAYS['farmsize'] : null;
-    onLegendChange(fsOverlay);
+    onLegendChange(null);
   });
 </script>
 

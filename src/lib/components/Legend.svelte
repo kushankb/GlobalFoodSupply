@@ -1,16 +1,7 @@
 <script>
   import { FOOD_GROUP_COLORS, INFRA_COLORS } from '$lib/layers/tilesetIds.js';
 
-  let { config, breadbasketActive, infraActive = false, selectedFoodGroup = null, onSelectFoodGroup = () => {} } = $props();
-
-  let gradientStyle = $derived.by(() => {
-    if (!config?.legendColors) return '';
-    const stops = config.legendColors.map(({ color }, i) => {
-      const pct = (i / (config.legendColors.length - 1)) * 100;
-      return `${color} ${pct}%`;
-    });
-    return `linear-gradient(to right, ${stops.join(', ')})`;
-  });
+  let { breadbasketActive, infraActive = false, selectedFoodGroup = null, onSelectFoodGroup = () => {} } = $props();
 
   const foodGroups = Object.entries(FOOD_GROUP_COLORS);
   const infraEntries = Object.entries(INFRA_COLORS);
@@ -63,20 +54,6 @@
     </div>
   {/if}
 
-  <!-- Farm size raster gradient legend -->
-  {#if config?.legendColors}
-    <div class="legend">
-      <div class="legend-title">{config.label} ({config.unit})</div>
-      <div class="legend-gradient" style="background: {gradientStyle}"></div>
-      <div class="legend-labels">
-        {#each config.legendColors as { label }, i}
-          {#if i === 0 || i === config.legendColors.length - 1 || i === Math.floor(config.legendColors.length / 2)}
-            <span>{label}</span>
-          {/if}
-        {/each}
-      </div>
-    </div>
-  {/if}
 </div>
 
 <style>

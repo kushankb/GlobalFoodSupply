@@ -30,7 +30,6 @@
   }
 
   let breadbasketActive = $derived(activeLayers.includes('breadbaskets'));
-  let farmActive        = $derived(activeLayers.includes('farmsize'));
   let infraActive       = $derived(activeLayers.includes('infrastructure'));
 </script>
 
@@ -101,40 +100,6 @@
     </button>
   </div>
 
-  <hr class="panel-divider" />
-
-  <!-- Overlay -->
-  <div class="panel-section-label">Overlay</div>
-
-  <div class="layer-btn-wrapper">
-    <button
-      class="layer-btn {farmActive ? 'active' : ''}"
-      style="--btn-color: #df65b0"
-      onclick={() => onToggle('farmsize')}
-      onmouseenter={(e) => showTooltip(e, 'farmsize')}
-      onmouseleave={hideTooltip}
-    >
-      <span class="layer-dot"></span>
-      <span class="layer-btn-text">
-        <span class="layer-btn-label">Farm Size</span>
-        <span class="layer-btn-unit">dominant ha</span>
-      </span>
-    </button>
-  </div>
-
-  {#if farmActive}
-    <div class="opacity-slider-row">
-      <input
-        type="range"
-        class="opacity-slider"
-        min="0" max="1" step="0.05"
-        value={layerOpacity.farmsize}
-        oninput={(e) => onOpacityChange('farmsize', parseFloat(e.target.value))}
-        style="--slider-color: #df65b0"
-      />
-      <span class="opacity-value">{Math.round(layerOpacity.farmsize * 100)}%</span>
-    </div>
-  {/if}
 </div>
 
 <!-- Layer description tooltip -->

@@ -19,10 +19,8 @@
   let activeLayers      = $state(['breadbaskets', 'infrastructure']);
   let layerOpacity      = $state({
     breadbaskets: 1.0,
-    farmsize:     0.65,
   });
   let selectedFoodGroup = $state(null);
-  let legendConfig      = $state(null);
   let mapLoaded         = $state(false);
   let mapRef;
 
@@ -163,7 +161,6 @@
   {selectedCountryId}
   {edgeData}
   onEdgeClick={handleEdgeClick}
-  onLegendChange={(cfg) => { legendConfig = cfg; }}
   onStateSelect={(id) => { selectedStateId = id; selectedCountryId = null; selectedEdge = null; }}
   onCountrySelect={(id) => { selectedCountryId = id; selectedStateId = null; selectedEdge = null; }}
 />
@@ -214,7 +211,6 @@
 
 <!-- Legends -->
 <Legend
-  config={legendConfig}
   {breadbasketActive}
   {infraActive}
   {selectedFoodGroup}
