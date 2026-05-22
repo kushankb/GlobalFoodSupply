@@ -101,6 +101,10 @@
   </div>
 
   {#if infraActive}
+    <div class="slider-label-row">
+      <span>Edge Thickness</span>
+      <span class="opacity-value">{edgeWidthScale.toFixed(1)}×</span>
+    </div>
     <div class="opacity-slider-row">
       <input
         type="range"
@@ -110,7 +114,6 @@
         oninput={(e) => onEdgeWidthChange(parseFloat(e.target.value))}
         style="--slider-color: #38bdf8"
       />
-      <span class="opacity-value">{edgeWidthScale.toFixed(1)}×</span>
     </div>
   {/if}
 

@@ -203,6 +203,15 @@ html, body {
 }
 
 /* ── Opacity slider (appears under active layer buttons) ────── */
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px 0 34px;
+  font-size: 11px;
+  color: #6f7886;
+}
+
 .opacity-slider-row {
   display: flex;
   align-items: center;

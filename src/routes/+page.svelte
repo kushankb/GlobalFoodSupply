@@ -18,10 +18,10 @@
   let selectedCountryId = $state(null);
   let activeLayers      = $state(['breadbaskets', 'infrastructure']);
   let layerOpacity      = $state({
-    breadbaskets: 1.0,
+    breadbaskets: 0.20,
   });
   let selectedFoodGroup  = $state(null);
-  let edgeWidthScale     = $state(1.0);
+  let edgeWidthScale     = $state(0.75);
   let mapLoaded          = $state(false);
   let mapRef;
 
