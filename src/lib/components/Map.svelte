@@ -193,6 +193,7 @@
       m.getCanvas().style.cursor = '';
     });
     m.on('click', 'country-fill', (e) => {
+      if (deckClickHandled) { deckClickHandled = false; return; }
       if (!e.features?.length) return;
       const feat = e.features[0];
       const iso3 = feat.properties[COUNTRY_BOUNDARIES.idKey];
@@ -229,6 +230,7 @@
       m.getCanvas().style.cursor = '';
     });
     m.on('click', 'admin2-fill', (e) => {
+      if (deckClickHandled) { deckClickHandled = false; return; }
       if (!e.features?.length) return;
       const feat = e.features[0];
       const stateId = feat.properties[ADMIN2_STATES.idKey];
@@ -340,6 +342,11 @@
       closeButton: false,
       closeOnClick: false,
       maxWidth: '320px',
+    });
+
+    m.on('click', () => {
+      // Reset flag after all click handlers have run
+      setTimeout(() => { deckClickHandled = false; }, 0);
     });
 
     m.on('style.load', () => {
