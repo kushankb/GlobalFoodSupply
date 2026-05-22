@@ -52,7 +52,7 @@
   <div class="layer-btn-wrapper">
     <button
       class="layer-btn {breadbasketActive ? 'active' : ''}"
-      style="--btn-color: #e6a532"
+      style="--btn-color: #38bdf8"
       onclick={() => onToggle('breadbaskets')}
       onmouseenter={(e) => showTooltip(e, 'breadbaskets')}
       onmouseleave={hideTooltip}
@@ -87,14 +87,14 @@
   <div class="layer-btn-wrapper">
     <button
       class="layer-btn {infraActive ? 'active' : ''}"
-      style="--btn-color: #38bdf8"
+      style="--btn-color: #dc9b4b"
       onclick={() => onToggle('infrastructure')}
       onmouseenter={(e) => showTooltip(e, 'infrastructure')}
       onmouseleave={hideTooltip}
     >
       <span class="layer-dot"></span>
       <span class="layer-btn-text">
-        <span class="layer-btn-label">Infrastructure Edges</span>
+        <span class="layer-btn-label">Transport Infrastructure</span>
         <span class="layer-btn-unit">click any edge for details</span>
       </span>
     </button>
@@ -112,7 +112,7 @@
         min="0.2" max="2.5" step="0.1"
         value={edgeWidthScale}
         oninput={(e) => onEdgeWidthChange(parseFloat(e.target.value))}
-        style="--slider-color: #38bdf8"
+        style="--slider-color: #dc9b4b"
       />
     </div>
   {/if}
