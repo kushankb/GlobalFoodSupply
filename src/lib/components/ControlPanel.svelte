@@ -1,7 +1,7 @@
 <script>
   import { LAYER_DESCRIPTIONS } from '$lib/layers/tilesetIds.js';
 
-  let { activeLayers, layerOpacity, onToggle, onOpacityChange } = $props();
+  let { activeLayers, layerOpacity, edgeWidthScale = 1.0, onToggle, onOpacityChange, onEdgeWidthChange = () => {} } = $props();
 
   // Tooltip state
   let tooltipKey = $state(null);
@@ -99,6 +99,20 @@
       </span>
     </button>
   </div>
+
+  {#if infraActive}
+    <div class="opacity-slider-row">
+      <input
+        type="range"
+        class="opacity-slider"
+        min="0.2" max="2.5" step="0.1"
+        value={edgeWidthScale}
+        oninput={(e) => onEdgeWidthChange(parseFloat(e.target.value))}
+        style="--slider-color: #38bdf8"
+      />
+      <span class="opacity-value">{edgeWidthScale.toFixed(1)}×</span>
+    </div>
+  {/if}
 
 </div>
 

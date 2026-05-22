@@ -28,6 +28,7 @@
     onCountrySelect = () => {},
     edgeData = null,
     edgePcts = null,
+    edgeWidthScale = 1.0,
     onEdgeClick = () => {},
   } = $props();
 
@@ -387,8 +388,8 @@
 
     function getWidth(d) {
       const pct = edgePcts?.data?.[d._idx]?.[0] ?? null;
-      if (pct === null) return 0.6;
-      return 0.6 + (pct / 100) * 3.4; // 0.6 px → 4 px
+      if (pct === null) return 0.3 * edgeWidthScale;
+      return (0.3 + (pct / 100) * 2.2) * edgeWidthScale; // 0.3 → 2.5 px, scaled
     }
 
     const layer = new PathLayer({
@@ -413,7 +414,7 @@
       parameters: { depthTest: false },
       updateTriggers: {
         getColor: [edgePcts],
-        getWidth: [edgePcts],
+        getWidth: [edgePcts, edgeWidthScale],
       },
     });
 

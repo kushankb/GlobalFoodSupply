@@ -20,8 +20,9 @@
   let layerOpacity      = $state({
     breadbaskets: 1.0,
   });
-  let selectedFoodGroup = $state(null);
-  let mapLoaded         = $state(false);
+  let selectedFoodGroup  = $state(null);
+  let edgeWidthScale     = $state(1.0);
+  let mapLoaded          = $state(false);
   let mapRef;
 
   // ── Edge data state ───────────────────────────────────────────────────────────
@@ -161,6 +162,7 @@
   {selectedCountryId}
   {edgeData}
   {edgePcts}
+  {edgeWidthScale}
   onEdgeClick={handleEdgeClick}
   onStateSelect={(id) => { selectedStateId = id; selectedCountryId = null; selectedEdge = null; }}
   onCountrySelect={(id) => { selectedCountryId = id; selectedStateId = null; selectedEdge = null; }}
@@ -175,6 +177,8 @@
   {layerOpacity}
   onToggle={handleToggle}
   onOpacityChange={handleOpacityChange}
+  {edgeWidthScale}
+  onEdgeWidthChange={(v) => { edgeWidthScale = v; }}
 />
 
 <!-- Info panel -->
