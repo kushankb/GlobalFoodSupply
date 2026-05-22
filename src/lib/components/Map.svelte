@@ -12,7 +12,6 @@
     FOOD_GROUP_BY_CODE,
     ADMIN2_STATES,
     COUNTRY_BOUNDARIES,
-    INFRA_COLORS,
     methodCodeExpr,
     decodePackedC,
   } from '$lib/layers/tilesetIds.js';
@@ -28,6 +27,7 @@
     onStateSelect = () => {},
     onCountrySelect = () => {},
     edgeData = null,
+    edgePcts = null,
     onEdgeClick = () => {},
   } = $props();
 
@@ -365,7 +365,7 @@
     };
   });
 
-  // ── deck.gl PathLayer — rebuilds when edgeData or infra visibility changes ──
+  // ── deck.gl PathLayer — single colour, brightness + width = criticality ──
   $effect(() => {
     if (!overlayRef) return;
 
@@ -375,21 +375,20 @@
       return;
     }
 
-    // Compute energy range for opacity normalisation (log scale)
-    let eMin = Infinity, eMax = -Infinity;
-    for (const d of edgeData) {
-      if (d.energy > 0 && d.energy < eMin) eMin = d.energy;
-      if (d.energy > eMax) eMax = d.energy;
-    }
-    const logMin = Math.log10(eMin || 1);
-    const logMax = Math.log10(eMax || 1);
+    // Warm amber base colour
+    const R = 220, G = 155, B = 75;
 
     function getColor(d) {
-      const cfg = INFRA_COLORS[d.infraType];
-      const [r, g, b] = cfg ? cfg.rgb : [148, 163, 184];
-      if (!d.energy || d.energy <= 0) return [r, g, b, 8];
-      const t = Math.max(0, Math.min(1, (Math.log10(d.energy) - logMin) / (logMax - logMin)));
-      return [r, g, b, Math.round(12 + Math.pow(t, 2.0) * 220)];
+      const pct = edgePcts?.data?.[d._idx]?.[0] ?? null; // pctFlow 0–100
+      if (pct === null) return [R, G, B, 15];
+      const t = Math.pow(pct / 100, 1.2);
+      return [R, G, B, Math.round(15 + t * 230)];
+    }
+
+    function getWidth(d) {
+      const pct = edgePcts?.data?.[d._idx]?.[0] ?? null;
+      if (pct === null) return 0.6;
+      return 0.6 + (pct / 100) * 3.4; // 0.6 px → 4 px
     }
 
     const layer = new PathLayer({
@@ -397,14 +396,14 @@
       data: edgeData,
       getPath: (d) => d.coordinates,
       getColor,
-      getWidth: 1.5,
+      getWidth,
       widthUnits: 'pixels',
-      widthMinPixels: 1,
-      widthMaxPixels: 3,
+      widthMinPixels: 0.4,
+      widthMaxPixels: 5,
       pickable: true,
       pickingRadius: 12,
       autoHighlight: true,
-      highlightColor: [255, 255, 255, 80],
+      highlightColor: [255, 255, 255, 100],
       onClick: (info) => {
         if (info.object) {
           deckClickHandled = true;
@@ -412,6 +411,10 @@
         }
       },
       parameters: { depthTest: false },
+      updateTriggers: {
+        getColor: [edgePcts],
+        getWidth: [edgePcts],
+      },
     });
 
     overlayRef.setProps({ layers: [layer] });

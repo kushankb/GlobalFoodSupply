@@ -1,10 +1,9 @@
 <script>
-  import { FOOD_GROUP_COLORS, INFRA_COLORS } from '$lib/layers/tilesetIds.js';
+  import { FOOD_GROUP_COLORS } from '$lib/layers/tilesetIds.js';
 
   let { breadbasketActive, infraActive = false, selectedFoodGroup = null, onSelectFoodGroup = () => {} } = $props();
 
   const foodGroups = Object.entries(FOOD_GROUP_COLORS);
-  const infraEntries = Object.entries(INFRA_COLORS);
 
   function handleSwatchClick(key) {
     onSelectFoodGroup(selectedFoodGroup === key ? null : key);
@@ -38,19 +37,15 @@
     </div>
   {/if}
 
-  <!-- Infrastructure type legend -->
+  <!-- Infrastructure criticality legend -->
   {#if infraActive}
-    <div class="legend legend-categorical">
-      <div class="legend-title">Infrastructure Type</div>
-      <div class="legend-swatches">
-        {#each infraEntries as [type, { color }]}
-          <div class="legend-swatch-row">
-            <span class="legend-swatch legend-swatch-line" style="background: {color}"></span>
-            <span class="legend-swatch-label">{type}</span>
-          </div>
-        {/each}
+    <div class="legend">
+      <div class="legend-title">Infrastructure Criticality</div>
+      <div class="legend-gradient" style="background: linear-gradient(to right, rgba(220,155,75,0.07), rgba(220,155,75,1))"></div>
+      <div class="legend-labels">
+        <span>Low</span><span>High</span>
       </div>
-      <div class="legend-hint faded">Opacity = food energy flow</div>
+      <div class="legend-hint faded">Brightness + width = quantity rank</div>
     </div>
   {/if}
 

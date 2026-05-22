@@ -160,6 +160,7 @@
   {selectedStateId}
   {selectedCountryId}
   {edgeData}
+  {edgePcts}
   onEdgeClick={handleEdgeClick}
   onStateSelect={(id) => { selectedStateId = id; selectedCountryId = null; selectedEdge = null; }}
   onCountrySelect={(id) => { selectedCountryId = id; selectedStateId = null; selectedEdge = null; }}
