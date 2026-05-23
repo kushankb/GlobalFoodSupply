@@ -192,23 +192,6 @@
       }
       m.getCanvas().style.cursor = '';
     });
-    m.on('click', 'country-fill', (e) => {
-      if (deckClickHandled) { deckClickHandled = false; return; }
-      if (!e.features?.length) return;
-      const feat = e.features[0];
-      const iso3 = feat.properties[COUNTRY_BOUNDARIES.idKey];
-      if (selectedCountryFeatureId !== null) {
-        m.setFeatureState({ source: 'countries', sourceLayer: COUNTRY_BOUNDARIES.layer, id: selectedCountryFeatureId }, { selected: false });
-      }
-      if (iso3 === selectedCountryId) {
-        selectedCountryFeatureId = null;
-        onCountrySelect(null);
-      } else {
-        selectedCountryFeatureId = feat.id;
-        m.setFeatureState({ source: 'countries', sourceLayer: COUNTRY_BOUNDARIES.layer, id: feat.id }, { selected: true });
-        onCountrySelect(iso3);
-      }
-    });
   }
 
   function setupAdmin2Events(m) {
@@ -229,21 +212,57 @@
       }
       m.getCanvas().style.cursor = '';
     });
-    m.on('click', 'admin2-fill', (e) => {
-      if (deckClickHandled) { deckClickHandled = false; return; }
-      if (!e.features?.length) return;
-      const feat = e.features[0];
-      const stateId = feat.properties[ADMIN2_STATES.idKey];
-      if (selectedAdmin2FeatureId !== null) {
-        m.setFeatureState({ source: 'admin2', sourceLayer: ADMIN2_STATES.layer, id: selectedAdmin2FeatureId }, { selected: false });
+  }
+
+  // Unified click handler — deck.gl edges take priority over Mapbox fill layers
+  function setupClickHandler(m, overlay) {
+    m.on('click', (e) => {
+      // 1. Try infrastructure edge first via deck.gl picking
+      const picked = overlay.pickObject({ x: e.point.x, y: e.point.y, radius: 12 });
+      if (picked?.object) {
+        onEdgeClick({ object: picked.object, x: e.point.x, y: e.point.y });
+        return;
       }
-      if (stateId === selectedStateId) {
-        selectedAdmin2FeatureId = null;
-        onStateSelect(null);
-      } else {
-        selectedAdmin2FeatureId = feat.id;
-        m.setFeatureState({ source: 'admin2', sourceLayer: ADMIN2_STATES.layer, id: feat.id }, { selected: true });
-        onStateSelect(stateId);
+
+      // 2. Country fill (zoom < 4)
+      if (m.getLayer('country-fill')) {
+        const features = m.queryRenderedFeatures(e.point, { layers: ['country-fill'] });
+        if (features.length) {
+          const feat = features[0];
+          const iso3 = feat.properties[COUNTRY_BOUNDARIES.idKey];
+          if (selectedCountryFeatureId !== null) {
+            m.setFeatureState({ source: 'countries', sourceLayer: COUNTRY_BOUNDARIES.layer, id: selectedCountryFeatureId }, { selected: false });
+          }
+          if (iso3 === selectedCountryId) {
+            selectedCountryFeatureId = null;
+            onCountrySelect(null);
+          } else {
+            selectedCountryFeatureId = feat.id;
+            m.setFeatureState({ source: 'countries', sourceLayer: COUNTRY_BOUNDARIES.layer, id: feat.id }, { selected: true });
+            onCountrySelect(iso3);
+          }
+          return;
+        }
+      }
+
+      // 3. Admin2 fill (zoom >= 4)
+      if (m.getLayer('admin2-fill')) {
+        const features = m.queryRenderedFeatures(e.point, { layers: ['admin2-fill'] });
+        if (features.length) {
+          const feat = features[0];
+          const stateId = feat.properties[ADMIN2_STATES.idKey];
+          if (selectedAdmin2FeatureId !== null) {
+            m.setFeatureState({ source: 'admin2', sourceLayer: ADMIN2_STATES.layer, id: selectedAdmin2FeatureId }, { selected: false });
+          }
+          if (stateId === selectedStateId) {
+            selectedAdmin2FeatureId = null;
+            onStateSelect(null);
+          } else {
+            selectedAdmin2FeatureId = feat.id;
+            m.setFeatureState({ source: 'admin2', sourceLayer: ADMIN2_STATES.layer, id: feat.id }, { selected: true });
+            onStateSelect(stateId);
+          }
+        }
       }
     });
   }
@@ -281,7 +300,6 @@
   let mapContainer;
   let mapRef = null;
   let overlayRef = null;
-  let deckClickHandled = false;
   let mapReady = $state(false);
   let activeLayersSnapshot = $derived(activeLayers);
   let eventsSetUp = false;
@@ -344,11 +362,6 @@
       maxWidth: '320px',
     });
 
-    m.on('click', () => {
-      // Reset flag after all click handlers have run
-      setTimeout(() => { deckClickHandled = false; }, 0);
-    });
-
     m.on('style.load', () => {
       applyBaseStyleOverrides(m);
       addAllSources(m);
@@ -357,6 +370,7 @@
         setupHoverEvents(m, popup, () => activeLayersSnapshot);
         setupCountryEvents(m);
         setupAdmin2Events(m);
+        setupClickHandler(m, overlay);
         eventsSetUp = true;
       }
       mapReady = true;
@@ -412,12 +426,6 @@
       pickingRadius: 12,
       autoHighlight: true,
       highlightColor: [255, 255, 255, 100],
-      onClick: (info) => {
-        if (info.object) {
-          deckClickHandled = true;
-          onEdgeClick(info);
-        }
-      },
       parameters: { depthTest: false },
       updateTriggers: {
         getColor: [edgePcts],
